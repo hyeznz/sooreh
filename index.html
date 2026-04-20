@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>수레 — 실행 동반자</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#111318;display:flex;justify-content:center;align-items:flex-start;padding:20px 0;font-family:'Press Start 2P',monospace}
+.phone{width:320px;background:#1a1c2c;border-radius:36px;overflow:hidden;border:6px solid #2a2d3e}
+.notch{height:28px;background:#111318;display:flex;align-items:center;justify-content:center}
+.notch-bar{width:80px;height:10px;background:#1a1c2c;border-radius:10px}
+.statusbar{background:#16213e;padding:4px 14px;display:flex;justify-content:space-between;align-items:center}
+.status-txt{font-size:6px;color:#888}
+.topbar{background:#16213e;padding:10px 14px 8px;border-bottom:2px solid #0f3460;display:flex;align-items:center;justify-content:space-between}
+.app-logo{font-size:11px;color:#f4c75a}
+.tab-label{font-size:6px;color:#888}
+.body{background:#1a1c2c;min-height:500px}
+
+.home-body{padding:12px}
+.home-greeting{font-size:8px;color:#f4c75a;margin-bottom:2px}
+.home-sub{font-size:6px;color:#555;margin-bottom:12px}
+.today-section{background:#1e0a0a;border:2px solid #ff4444;border-radius:6px;padding:10px;margin-bottom:12px}
+.today-label{font-size:6px;color:#ff6666;margin-bottom:8px}
+.today-card{display:flex;align-items:center;gap:8px}
+.today-icon{font-size:20px;width:28px;text-align:center}
+.today-info{flex:1}
+.today-name{font-size:7px;color:#eee;margin-bottom:5px;line-height:1.5}
+.mini-bar{background:#333;height:5px;border:1px solid #555}
+.mini-fill{height:100%;background:#ff4444}
+.mini-steps{font-size:6px;color:#888;margin-top:3px}
+.push-btn{font-size:6px;background:#ff4444;color:#fff;border:none;padding:6px 10px;border-radius:3px;cursor:pointer;margin-top:8px;width:100%;font-family:'Press Start 2P',monospace}
+.section-label{font-size:6px;color:#555;margin-bottom:8px;letter-spacing:1px}
+.wagon-card{background:#16213e;border:1px solid #2a3a5e;border-radius:6px;padding:10px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:8px}
+.wagon-card:active{border-color:#f4c75a}
+.wagon-icon{font-size:18px;width:26px;text-align:center}
+.wagon-info{flex:1;min-width:0}
+.wagon-name{font-size:6px;color:#ccc;margin-bottom:5px;line-height:1.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wagon-bar{background:#333;height:5px;border:1px solid #444}
+.wagon-fill{height:100%;background:#f4c75a}
+.wagon-steps-txt{font-size:6px;color:#666;margin-top:3px}
+.wagon-arrow{font-size:8px;color:#444}
+.add-btn{width:100%;font-size:7px;background:transparent;border:1px dashed #333;color:#555;padding:10px;border-radius:6px;cursor:pointer;margin-top:4px;font-family:'Press Start 2P',monospace}
+
+.map-body{background:#1a1c2c}
+.map-header{padding:10px 12px 6px;display:flex;align-items:center;gap:8px}
+.back-btn{font-size:7px;color:#888;background:none;border:none;cursor:pointer;padding:2px;font-family:'Press Start 2P',monospace}
+.map-title{font-size:6px;color:#f4c75a;flex:1;line-height:1.5}
+.map-canvas{background:#2d4a22;margin:0 12px;border-radius:6px;border:2px solid #3d6b2e;position:relative;height:180px;overflow:hidden}
+.px-road{position:absolute;top:50%;transform:translateY(-50%);left:0;right:0;height:22px;background:#c8a87a}
+.px-road-line{position:absolute;top:50%;transform:translateY(-50%);height:3px;background:#1a1c2c;left:0;right:0}
+.px-tree-top{background:#3d8b37}
+.px-tree-trunk{width:4px;height:7px;background:#7b4f2e;margin:0 auto}
+.flag-wrap{position:absolute;right:8px;top:0;bottom:0;display:flex;align-items:center}
+.flag-pole-div{width:3px;height:50px;background:#999;position:relative}
+.flag-tri-div{position:absolute;top:0;right:0;width:0;height:0;border-top:8px solid #ff3333;border-bottom:8px solid transparent;border-left:12px solid #ff3333}
+.sdot{position:absolute;top:50%;transform:translate(-50%,-50%);width:13px;height:13px}
+.sdot-inner{width:13px;height:13px}
+.sdot-done{background:#f4c75a;border:2px solid #b8860b}
+.sdot-cur{background:#ff6b6b;border:2px solid #cc2222;animation:blink 0.9s infinite}
+.sdot-fut{background:#333;border:2px solid #555}
+.px-char{position:absolute;top:50%;transform:translateY(-80%);font-size:16px;transition:left 0.5s}
+.cloud-div{position:absolute;background:#b8d4f0;border-radius:3px}
+.prog-wrap{margin:8px 12px;background:#16213e;border-radius:4px;padding:8px 10px}
+.prog-label{font-size:6px;color:#666;margin-bottom:5px}
+.prog-track{background:#333;height:8px;border:1px solid #555}
+.prog-fill{height:100%;background:#f4c75a;transition:width 0.5s}
+.prog-pct{font-size:6px;color:#f4c75a;text-align:right;margin-top:3px}
+.step-list-m{margin:8px 12px;display:flex;flex-direction:column;gap:5px}
+.step-item-m{background:#16213e;border:1px solid #2a3a5e;border-radius:4px;padding:7px 9px;display:flex;align-items:center;gap:7px}
+.step-item-m.done-m{border-color:#f4c75a;opacity:0.65}
+.step-item-m.cur-m{border-color:#ff4444}
+.step-dot-m{width:8px;height:8px;flex-shrink:0}
+.step-dot-m.done-m{background:#f4c75a}
+.step-dot-m.cur-m{background:#ff4444;animation:blink 0.9s infinite}
+.step-dot-m.fut-m{background:#333;border:1px solid #555}
+.step-text-m{font-size:6px;color:#aaa;line-height:1.5;flex:1}
+.step-item-m.done-m .step-text-m{color:#f4c75a}
+.step-item-m.cur-m .step-text-m{color:#ff6666}
+.check-m{font-size:6px;color:#f4c75a}
+.action-row{display:flex;gap:8px;margin:10px 12px 12px}
+.act-btn{flex:1;font-size:6px;padding:9px 4px;background:transparent;border:1px solid #333;color:#666;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace}
+.act-btn.primary{border-color:#f4c75a;color:#f4c75a}
+.act-btn.primary:active{background:#f4c75a;color:#1a1c2c}
+
+.char-body{padding:12px}
+.char-title-m{font-size:8px;color:#f4c75a;text-align:center;margin-bottom:12px}
+.char-grid-m{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.char-card-m{background:#16213e;border:1px solid #2a3a5e;border-radius:4px;padding:6px 4px;text-align:center;cursor:pointer}
+.char-card-m.sel{border-color:#f4c75a}
+.char-emoji-m{font-size:18px;display:block;margin-bottom:3px}
+.char-name-m{font-size:5px;color:#666}
+.char-card-m.sel .char-name-m{color:#f4c75a}
+.char-action-row{display:flex;gap:8px}
+
+.navbar{background:#16213e;border-top:2px solid #0f3460;display:flex;justify-content:space-around;padding:8px 0 10px}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+.nav-icon{font-size:14px}
+.nav-label{font-size:5px;color:#555}
+.nav-item.active .nav-label{color:#f4c75a}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="notch"><div class="notch-bar"></div></div>
+  <div class="statusbar">
+    <span class="status-txt">9:41</span>
+    <span class="status-txt">●●●</span>
+  </div>
+  <div class="topbar">
+    <div class="app-logo">수레</div>
+    <div class="tab-label" id="tab-lbl">홈</div>
+  </div>
+
+  <div class="body">
+    <div id="v-home" class="home-body">
+      <div class="home-greeting">안녕하세요!</div>
+      <div class="home-sub">오늘도 한 걸음씩</div>
+      <div class="today-section">
+        <div class="today-label">★ 오늘의 수레</div>
+        <div class="today-card">
+          <div class="today-icon">🎬</div>
+          <div class="today-info">
+            <div class="today-name">유튜브 첫 영상 올리기</div>
+            <div class="mini-bar"><div class="mini-fill" style="width:37%"></div></div>
+            <div class="mini-steps">3 / 8 단계</div>
+          </div>
+        </div>
+        <button class="push-btn" onclick="openMap(0)">지도 보기 →</button>
+      </div>
+      <div class="section-label">내 수레 전체</div>
+      <div class="wagon-card" onclick="openMap(0)">
+        <div class="wagon-icon">🎬</div>
+        <div class="wagon-info">
+          <div class="wagon-name">유튜브 첫 영상 올리기</div>
+          <div class="wagon-bar"><div class="wagon-fill" style="width:37%"></div></div>
+          <div class="wagon-steps-txt">3 / 8 단계</div>
+        </div>
+        <div class="wagon-arrow">›</div>
+      </div>
+      <div class="wagon-card" onclick="openMap(1)">
+        <div class="wagon-icon">💻</div>
+        <div class="wagon-info">
+          <div class="wagon-name">노트북 당근 판매</div>
+          <div class="wagon-bar"><div class="wagon-fill" style="width:25%"></div></div>
+          <div class="wagon-steps-txt">1 / 4 단계</div>
+        </div>
+        <div class="wagon-arrow">›</div>
+      </div>
+      <div class="wagon-card" onclick="openMap(2)">
+        <div class="wagon-icon">💰</div>
+        <div class="wagon-info">
+          <div class="wagon-name">비상금 300만원 모으기</div>
+          <div class="wagon-bar"><div class="wagon-fill" style="width:10%"></div></div>
+          <div class="wagon-steps-txt">1 / 10 단계</div>
+        </div>
+        <div class="wagon-arrow">›</div>
+      </div>
+      <button class="add-btn" onclick="openChar()">+ 새 수레 만들기</button>
+    </div>
+
+    <div id="v-map" style="display:none" class="map-body">
+      <div class="map-header">
+        <button class="back-btn" onclick="goHome()">←</button>
+        <div class="map-title" id="map-ttl">유튜브 첫 영상 올리기</div>
+      </div>
+      <div class="map-canvas">
+        <div class="cloud-div" style="width:40px;height:12px;top:12px;left:30px;opacity:0.6"></div>
+        <div class="cloud-div" style="width:28px;height:9px;top:16px;left:62px;opacity:0.4"></div>
+        <div class="cloud-div" style="width:50px;height:14px;top:10px;right:50px;opacity:0.7"></div>
+        <div style="position:absolute;inset:0;background:#2d4a22"></div>
+        <div style="position:absolute;top:18px;left:12px"><div class="px-tree-top" style="width:14px;height:12px"></div><div class="px-tree-trunk"></div></div>
+        <div style="position:absolute;top:120px;left:50px"><div class="px-tree-top" style="width:14px;height:12px;background:#2a6b25"></div><div class="px-tree-trunk"></div></div>
+        <div style="position:absolute;top:22px;right:60px"><div class="px-tree-top" style="width:14px;height:12px"></div><div class="px-tree-trunk"></div></div>
+        <div style="position:absolute;top:110px;right:20px"><div class="px-tree-top" style="width:14px;height:12px;background:#2a6b25"></div><div class="px-tree-trunk"></div></div>
+        <div class="px-road"><div class="px-road-line"></div></div>
+        <div class="flag-wrap"><div class="flag-pole-div"><div class="flag-tri-div"></div></div></div>
+        <div class="sdot" style="left:8%"><div class="sdot-inner sdot-done" id="d0"></div></div>
+        <div class="sdot" style="left:20%"><div class="sdot-inner sdot-done" id="d1"></div></div>
+        <div class="sdot" style="left:33%"><div class="sdot-inner sdot-done" id="d2"></div></div>
+        <div class="sdot" style="left:46%"><div class="sdot-inner sdot-cur" id="d3"></div></div>
+        <div class="sdot" style="left:59%"><div class="sdot-inner sdot-fut" id="d4"></div></div>
+        <div class="sdot" style="left:71%"><div class="sdot-inner sdot-fut" id="d5"></div></div>
+        <div class="sdot" style="left:83%"><div class="sdot-inner sdot-fut" id="d6"></div></div>
+        <div class="px-char" id="px-char" style="left:38%">🧑</div>
+      </div>
+      <div class="prog-wrap">
+        <div class="prog-label">목적지까지</div>
+        <div class="prog-track"><div class="prog-fill" id="pg-fill" style="width:37%"></div></div>
+        <div class="prog-pct" id="pg-pct">37%</div>
+      </div>
+      <div class="step-list-m" id="step-list-m"></div>
+      <div class="action-row">
+        <button class="act-btn" onclick="goHome()">← 홈</button>
+        <button class="act-btn primary" onclick="completeStep()">단계 완료! ✓</button>
+      </div>
+    </div>
+
+    <div id="v-char" style="display:none" class="char-body">
+      <div class="char-title-m">캐릭터 선택</div>
+      <div class="char-grid-m">
+        <div class="char-card-m sel" onclick="selChar(this,'🧑')"><span class="char-emoji-m">🧑</span><div class="char-name-m">여행자</div></div>
+        <div class="char-card-m" onclick="selChar(this,'🐱')"><span class="char-emoji-m">🐱</span><div class="char-name-m">고양이</div></div>
+        <div class="char-card-m" onclick="selChar(this,'🐸')"><span class="char-emoji-m">🐸</span><div class="char-name-m">개구리</div></div>
+        <div class="char-card-m" onclick="selChar(this,'🐼')"><span class="char-emoji-m">🐼</span><div class="char-name-m">판다</div></div>
+        <div class="char-card-m" onclick="selChar(this,'🤖')"><span class="char-emoji-m">🤖</span><div class="char-name-m">로봇</div></div>
+        <div class="char-card-m" onclick="selChar(this,'🦊')"><span class="char-emoji-m">🦊</span><div class="char-name-m">여우</div></div>
+        <div class="char-card-m" onclick="selChar(this,'🐧')"><span class="char-emoji-m">🐧</span><div class="char-name-m">펭귄</div></div>
+        <div class="char-card-m" onclick="selChar(this,'🧙')"><span class="char-emoji-m">🧙</span><div class="char-name-m">마법사</div></div>
+      </div>
+      <div class="char-action-row">
+        <button class="act-btn" onclick="goHome()">← 취소</button>
+        <button class="act-btn primary" onclick="goHome()">선택 완료!</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="navbar">
+    <div class="nav-item active" onclick="goHome()">
+      <div class="nav-icon">🏠</div>
+      <div class="nav-label">홈</div>
+    </div>
+    <div class="nav-item" onclick="openChar()">
+      <div class="nav-icon">👤</div>
+      <div class="nav-label">캐릭터</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">😴</div>
+      <div class="nav-label">쉬어가기</div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-icon">⚙️</div>
+      <div class="nav-label">설정</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const maps=[
+  {goal:'유튜브 첫 영상 올리기',steps:['주제 & 포맷 결정','편집 리소스 준비','스크립트 작성','촬영하기','편집하기','썸네일 만들기','업로드 & 공개'],done:3,pct:37,cx:'38%'},
+  {goal:'노트북 당근 판매',steps:['파일 백업','공장 초기화','사진 찍기','당근 올리기'],done:1,pct:25,cx:'18%'},
+  {goal:'비상금 300만원 모으기',steps:['지출 파악','절약 항목 찾기','자동이체 설정','1달 결산','2달 결산','3달 결산','4달 결산','5달 결산','6달 결산','목표 달성!'],done:1,pct:10,cx:'6%'}
+];
+let cur=0,ch='🧑';
+const charPos=['6%','18%','30%','43%','56%','68%','80%','90%'];
+
+function show(id){
+  ['v-home','v-map','v-char'].forEach(v=>document.getElementById(v).style.display='none');
+  document.getElementById(id).style.display='block';
+}
+function goHome(){show('v-home');document.getElementById('tab-lbl').textContent='홈';}
+function openChar(){show('v-char');document.getElementById('tab-lbl').textContent='캐릭터';}
+function openMap(idx){
+  cur=idx;const m=maps[idx];
+  show('v-map');
+  document.getElementById('tab-lbl').textContent='지도';
+  document.getElementById('map-ttl').textContent=m.goal;
+  document.getElementById('pg-fill').style.width=m.pct+'%';
+  document.getElementById('pg-pct').textContent=m.pct+'%';
+  document.getElementById('px-char').style.left=m.cx;
+  document.getElementById('px-char').textContent=ch;
+  renderDots(m);renderStepList(m);
+}
+function renderDots(m){
+  for(let i=0;i<7;i++){
+    const d=document.getElementById('d'+i);
+    if(!d)continue;
+    d.className='sdot-inner';
+    if(i<m.done)d.classList.add('sdot-done');
+    else if(i===m.done)d.classList.add('sdot-cur');
+    else d.classList.add('sdot-fut');
+    d.parentElement.style.display=i<m.steps.length?'block':'none';
+  }
+}
+function renderStepList(m){
+  const l=document.getElementById('step-list-m');l.innerHTML='';
+  m.steps.slice(0,5).forEach((s,i)=>{
+    const div=document.createElement('div');
+    const cls=i<m.done?'done-m':i===m.done?'cur-m':'';
+    div.className='step-item-m '+cls;
+    const dc=document.createElement('div');
+    dc.className='step-dot-m '+(i<m.done?'done-m':i===m.done?'cur-m':'fut-m');
+    const tx=document.createElement('div');
+    tx.className='step-text-m';tx.textContent=(i+1)+'. '+s;
+    div.appendChild(dc);div.appendChild(tx);
+    if(i<m.done){const ck=document.createElement('div');ck.className='check-m';ck.textContent='✓';div.appendChild(ck);}
+    l.appendChild(div);
+  });
+  if(m.steps.length>5){
+    const more=document.createElement('div');
+    more.style.cssText='font-size:6px;color:#555;text-align:center;padding:4px;font-family:"Press Start 2P",monospace';
+    more.textContent='... '+(m.steps.length-5)+'개 더';
+    l.appendChild(more);
+  }
+}
+function completeStep(){
+  const m=maps[cur];
+  if(m.done>=m.steps.length)return;
+  m.done++;
+  m.pct=Math.round((m.done/m.steps.length)*100);
+  m.cx=charPos[Math.min(m.done,charPos.length-1)];
+  if(m.done===m.steps.length){m.pct=100;m.cx='90%';}
+  openMap(cur);
+  if(m.done===m.steps.length)setTimeout(()=>alert('🎉 목표 달성!\n수레가 깃발에 닿았어요!'),200);
+}
+function selChar(el,emoji){
+  document.querySelectorAll('.char-card-m').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');ch=emoji;
+  document.getElementById('px-char').textContent=ch;
+}
+</script>
+</body>
+</html>
